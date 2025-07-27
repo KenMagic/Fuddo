@@ -1,0 +1,171 @@
+﻿@model Fuddo.Models.Order
+@{
+    // ViewData["Title"] = "Chi tiết đơn hàng";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!-- 🔹 Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin">Quản lí</a></li>
+        <li class="breadcrumb-item"><a href="/AdminOrder">Quản lí đơn hàng</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Chi tiết đơn hàng</li>
+    </ol>
+</nav>
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0"><i class="bi bi-receipt-cutoff me-2"></i>Chi tiết đơn hàng #@Model.Id</h3>
+        </div>
+
+        <div class="card-body">
+            <!-- Phần Thông tin chung -->
+            <div class="row">
+                <!-- Cột thông tin khách hàng và giao hàng -->
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-3">Thông tin đơn hàng</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Mã đơn hàng</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
+
+                        <dt class="col-sm-4">Ngày đặt</dt>
+                        <dd class="col-sm-8">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-4">Khách hàng</dt>
+                        <dd class="col-sm-8">@Model.User.FullName</dd>
+
+                        <dt class="col-sm-4">Địa chỉ</dt>
+                        <dd class="col-sm-8">@Model.Address</dd>
+
+                        <dt class="col-sm-4">Số điện thoại</dt>
+                        <dd class="col-sm-8">@Model.Phone</dd>
+
+                        <dt class="col-sm-4">Ghi chú</dt>
+                        <dd class="col-sm-8">@(Model.Note ?? "Không có ghi chú")</dd>
+                    </dl>
+                </div>
+
+                <!-- Cột trạng thái và cập nhật -->
+                <div class="col-md-6 border-start">
+                    <h5 class="fw-bold mb-3">Trạng thái & Thanh toán</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Tổng tiền</dt>
+                        <dd class="col-sm-8 h5 text-danger fw-bold">@Model.TotalAmount.ToString("N0") ₫</dd>
+
+                        <dt class="col-sm-4">Trạng thái</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge fs-6 @GetBadgeClass(Model.Status)">
+                                @Model.Status
+                            </span>
+
+                        </dd>
+                    </dl>
+
+                    <hr />
+                    <h5 class="fw-bold mb-3">Cập nhật trạng thái</h5>
+
+                    <div class="d-flex gap-2 mt-3">
+                        @if (ViewBag.NextStatus != null)
+                        {
+                            <form asp-action="UpdateStatus" asp-controller="AdminOrder" method="post" class="d-inline">
+                                <input type="hidden" name="orderId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-warning">
+                                    Chuyển sang trạng thái @ViewBag.NextStatus
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-success fw-bold align-self-center">Đơn hàng đã hoàn tất hoặc hủy.</span>
+                        }
+
+                        @if (Model.Status != Fuddo.Models.OrderStatus.Cancelled && Model.Status != Fuddo.Models.OrderStatus.Delivered)
+                        {
+                            <form asp-action="Cancel" asp-controller="AdminOrder" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return confirm('Bạn chắc chắn muốn hủy đơn này?');">
+                                    <i class="bi bi-x-circle"></i> Hủy đơn hàng
+                                </button>
+                            </form>
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <!-- Phần Chi tiết sản phẩm -->
+            <h4 class="fw-bold mb-3"><i class="bi bi-cart-check me-2"></i>Các sản phẩm trong đơn hàng</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" style="width: 10%;">Hình ảnh</th>
+                            <th scope="col">Tên sản phẩm</th>
+                            <th scope="col" class="text-end">Đơn giá</th>
+                            <th scope="col" class="text-center">Số lượng</th>
+                            <th scope="col" class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                        {
+                            foreach (var detail in Model.OrderDetails)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@detail.Product?.ProductImages.FirstOrDefault()?.ImageUrl"
+                                             alt="@detail.Product?.Name"
+                                             class="img-thumbnail"
+                                             style="width: 60px; height: 60px; object-fit: cover;" />
+                                    </td>
+                                    <td>@detail.Product?.Name</td>
+                                    <td class="text-end">@detail.UnitPrice.ToString("N0") ₫</td>
+                                    <td class="text-center">@detail.Quantity</td>
+                                    <td class="text-end">@((detail.UnitPrice * detail.Quantity).ToString("N0")) ₫</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">
+                                    Không có sản phẩm trong đơn hàng
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                    <tfoot>
+                        <tr class="table-light">
+                            <td colspan="4" class="text-end fw-bold fs-5">Tổng cộng</td>
+                            <td class="text-end fw-bold fs-5 text-danger">@Model.TotalAmount.ToString("N0") ₫</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="/AdminOrder" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle me-1"></i> Quay lại danh sách
+            </a>
+        </div>
+    </div>
+</div>
+@functions {
+    string GetBadgeClass(Fuddo.Models.OrderStatus status)
+    {
+        return status switch
+        {
+            Fuddo.Models.OrderStatus.Pending => "bg-warning text-dark",
+            Fuddo.Models.OrderStatus.Processing => "bg-info text-dark",
+            Fuddo.Models.OrderStatus.Shipped => "bg-primary",
+            Fuddo.Models.OrderStatus.Delivered => "bg-success",
+            Fuddo.Models.OrderStatus.Cancelled => "bg-secondary",
+            _ => "bg-light text-dark"
+        };
+    }
+}

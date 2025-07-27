@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Fuddo.Models.User>
+@{
+    ViewData["Title"] = "Quản lí người dùng";
+}
+@addTagHelper *,Fuddo
+
+<!-- 🔹 Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin">Quản lí</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Người dùng</li>
+    </ol>
+</nav>
+
+<h2>Quản lý người dùng</h2>
+
+<!-- ✅ Hiển thị thông báo -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- 🔍 Tìm kiếm -->
+<form class="mb-3 d-flex" method="get" action="/AdminUser/Index">
+    <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control me-2" placeholder="Tìm theo tên, email, sđt..." />
+    <button type="submit" class="btn btn-orange">Tìm kiếm</button>
+</form>
+
+<a href="/AdminUser/Create" class="btn btn-success mb-3">Thêm người dùng</a>
+
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Tên đăng nhập</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Vai trò</th>
+            <th class="text-center">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Username</td>
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td>@user.Phone</td>
+                <td>@user.Role</td>
+                <td class="text-center">
+                    <a href="/AdminUser/Edit/@user.Id" class="btn btn-sm btn-warning me-1">✏️ Sửa</a>
+                    <a href="/AdminUser/Details/@user.Id" class="btn btn-sm btn-info me-1">👁️ Xem</a>
+                    <a href="/AdminUser/Delete/@user.Id" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">🗑️ Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- 🔢 PHÂN TRANG -->
+<pagination current-page="@ViewBag.CurrentPage"
+            total-pages="@ViewBag.TotalPages"
+            base-url="/AdminUser"
+            query-string="keyword=@ViewBag.Keyword">
+</pagination>

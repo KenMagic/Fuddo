@@ -1,0 +1,30 @@
+﻿@model Fuddo.Models.Category
+@{
+    ViewData["Title"] = "Thêm danh mục";
+}
+@addTagHelper *, Fuddo
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<nav style="--bs-breadcrumb-divider: '>>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin">Quản lí</a></li>
+        <li class="breadcrumb-item"><a href="/AdminCategory">Quản lí danh mục</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Thêm danh mục</li>
+    </ol>
+</nav>
+
+<div class="container mt-4">
+    <h2>Thêm danh mục mới</h2>
+
+    <tempdata-alert></tempdata-alert>
+
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Tên danh mục</label>
+            <input asp-for="Name" class="form-control" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-success">Lưu</button>
+        <a href="/AdminCategory" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+

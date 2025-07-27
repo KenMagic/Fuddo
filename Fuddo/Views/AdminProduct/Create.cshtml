@@ -1,0 +1,72 @@
+﻿@model Fuddo.Models.Product
+@{
+    ViewData["Title"] = "Thêm sản phẩm";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Fuddo
+<nav style="--bs-breadcrumb-divider: '>>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin">Quản lí</a></li>
+        <li class="breadcrumb-item"><a href="/AdminProduct">Quản lí sản phẩm</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Thêm sản phẩm</li>
+    </ol>
+</nav>
+<tempdata-alert></tempdata-alert>
+<div class="container mt-4">
+    <h2>Thêm sản phẩm mới</h2>
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label">Danh mục</label>
+            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select" required>
+                <option value="">-- Chọn danh mục --</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tên sản phẩm</label>
+            <input asp-for="Name" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Giá</label>
+            <input asp-for="Price" type="number" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tồn kho</label>
+            <input asp-for="QuantityInStock" type="number" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Thêm ảnh</label>
+            <input type="file" name="newImages" id="newImages" class="form-control" multiple accept="image/*" />
+        </div>
+
+        <div id="previewContainer" class="d-flex flex-wrap gap-2"></div>
+        <button type="submit" class="btn btn-success">Lưu</button>
+        <a href="/AdminProduct" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+@section Scripts {
+    <script>
+        const input = document.getElementById('newImages');
+        const previewContainer = document.getElementById('previewContainer');
+
+        input.addEventListener('change', function () {
+            previewContainer.innerHTML = "";
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.style.width = "100px";
+                    img.style.height = "100px";
+                    img.classList.add("img-thumbnail", "me-2", "mb-2");
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+}

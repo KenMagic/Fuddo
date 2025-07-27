@@ -1,0 +1,121 @@
+﻿@model Fuddo.Models.Product
+@{
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
+    var categories = ViewBag.Categories as List<Fuddo.Models.Category>;
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Fuddo
+
+
+<!-- 🔹 Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin">Quản lí</a></li>
+        <li class="breadcrumb-item"><a href="/AdminProduct">Quản lí sản phẩm</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa sản phẩm</li>
+    </ol>
+</nav>
+<tempdata-alert></tempdata-alert>
+<div class="container mt-4">
+    <h2>Chỉnh sửa sản phẩm</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label class="form-label">Tên sản phẩm</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Danh mục</label>
+            <select asp-for="CategoryId" class="form-select">
+                <option value="">-- Chọn danh mục --</option>
+                @if (categories != null)
+                {
+                    foreach (var c in categories)
+                    {
+                        <option value="@c.Id" selected="@(c.Id == Model.CategoryId)">
+                            @c.Name
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Giá</label>
+            <input asp-for="Price" type="number" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tồn kho</label>
+            <input asp-for="QuantityInStock" type="number" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        </div>
+
+        @{
+            var productImages = Model.ProductImages.ToList(); // Ép sang List
+        }
+        <div class="mb-3">
+            <label class="form-label">Ảnh hiện có</label>
+            <div class="d-flex flex-wrap gap-2">
+                @for (int i = 0; i < productImages.Count; i++)
+                {
+                    <div class="position-relative" style="display: inline-block;">
+                        <img src="@productImages[i].ImageUrl"
+                             class="img-thumbnail"
+                             style="width: 100px; height: 100px;" />
+
+                        <input type="checkbox"
+                               name="deleteImageIds"
+                               value="@productImages[i].Id"
+                               class="form-check-input position-absolute top-0 start-0 m-1 bg-danger border-white"
+                               title="Xóa ảnh này" />
+                    </div>
+                }
+            </div>
+            <small class="text-muted">Tick vào ảnh muốn xoá</small>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Thêm ảnh mới</label>
+            <input type="file" name="newImages" id="newImages" class="form-control" multiple accept="image/*" />
+        </div>
+
+        <div id="previewContainer" class="d-flex flex-wrap gap-2"></div>
+
+
+
+
+        <button type="submit" class="btn btn-warning">Cập nhật</button>
+        <a href="/AdminProduct" class="btn btn-secondary">Quay lại</a>
+    </form>
+</div>
+@section Scripts {
+    <script>
+        const input = document.getElementById('newImages');
+        const previewContainer = document.getElementById('previewContainer');
+
+        input.addEventListener('change', function () {
+            previewContainer.innerHTML = ""; // Clear old previews
+
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.style.width = "100px";
+                    img.style.height = "100px";
+                    img.classList.add("img-thumbnail", "me-2", "mb-2");
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+}

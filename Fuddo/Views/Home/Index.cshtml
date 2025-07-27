@@ -1,0 +1,61 @@
+﻿@model List<Fuddo.Models.Product>
+@{
+    ViewData["Title"] = "Trang chủ";
+    var categories = ViewBag.Categories as List<Fuddo.Models.Category>;
+}
+<style>
+    .category-btn {
+        transition: background-color 0.2s, color 0.2s;
+    }
+
+        .category-btn:hover,
+        .category-btn:focus {
+            background-color: #000; /* nền đen */
+            color: #fff; /* chữ trắng */
+        }
+
+
+</style>
+
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Sidebar: Categories -->
+        <div class="col-md-3">
+            <h5>Danh mục</h5>
+            <div class="d-grid gap-2">
+                @if (categories != null)
+                {
+                    foreach (var cat in categories)
+                    {
+                        <a href="/Product?categoryId=@cat.Id" class="btn btn-outline-dark category-btn">@cat.Name</a>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Main Content: Products -->
+        <div class="col-md-9">
+            <h5>Sản phẩm bán chạy</h5>
+            <div class="row">
+                @foreach (var p in Model)
+                {
+                    <div class="col-md-4 mb-4">
+                        <a href="/Product/Detail/@p.Id" class="text-decoration-none text-dark">
+                            <div class="card h-100 product-card">
+                            <img src="@(p.ProductImages.FirstOrDefault()?.ImageUrl ?? "/images/default.jpg")" class="card-img-top" alt="@p.Name" />
+                            <div class="card-body">
+                                <h6 class="card-title">@p.Name</h6>
+                                <p class="card-text text-danger fw-bold">@p.Price.ToString("N0") ₫</p>
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                }
+                
+                
+
+            </div>
+        </div>
+    </div>
+</div>

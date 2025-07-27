@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Đăng ký";
+    string? error = ViewBag.Error as string;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5 mt-5">
+            <h3 class="text-center mb-4">Đăng ký tài khoản</h3>
+
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="alert alert-danger">@error</div>
+            }
+
+            <form method="post" action="/Account/Register">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Tên đăng nhập</label>
+                    <input type="text" name="username" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mật khẩu</label>
+                    <input type="password" name="password" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Họ tên</label>
+                    <input type="text" name="fullname" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Số điện thoại</label>
+                    <input type="text" name="phone" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Địa chỉ</label>
+                    <input type="text" name="address" class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-orange w-100">Đăng ký</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <span>Đã có tài khoản? <a href="/Account/Login">Quay lại đăng nhập</a></span>
+            </div>
+        </div>
+    </div>
+</div>

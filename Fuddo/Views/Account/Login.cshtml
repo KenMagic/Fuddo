@@ -1,0 +1,37 @@
+﻿@model Fuddo.Models.ViewModel.LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4 mt-5">
+            <h3 class="text-center mb-4">🍔 Đăng nhập vào Fuddo</h3>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+            <form asp-action="Login" method="post" novalidate>
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label">Tên đăng nhập</label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Mật khẩu</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-orange w-100">Đăng nhập</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <span>Chưa có tài khoản?</span>
+                <a href="/Account/Register">Đăng ký</a>
+            </div>
+        </div>
+    </div>
+</div>
+

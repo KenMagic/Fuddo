@@ -1,0 +1,82 @@
+﻿@using Fuddo.Models;
+@addTagHelper *, Fuddo
+@model IEnumerable<Fuddo.Models.Product>
+@{
+    ViewData["Title"] = "Sản phẩm";
+}
+@{
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+}
+<div class="container mt-4">
+    <div class="row">
+        <!-- === FILTER === -->
+        <div class="col-md-3">
+            <h5>Bộ lọc</h5>
+            <form method="get" action="/Product">
+                <div class="mb-3">
+                    <label class="form-label">Tìm kiếm</label>
+                    <input type="text" name="keyword" class="form-control"
+                           placeholder="Tên sản phẩm..." value="@ViewBag.Keyword" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Danh mục</label>
+                    <select class="form-select" name="categoryId">
+                        <option value="">Tất cả</option>
+                        @foreach (var cat in (List<Category>)ViewBag.Categories)
+                        {
+                            <option value="@cat.Id" @(ViewBag.CategoryId?.ToString() == cat.Id.ToString() ? "selected" : "")>
+                                @cat.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Giá tối đa</label>
+                    <input type="number" name="maxPrice" class="form-control"
+                           value="@ViewBag.MaxPrice" />
+                </div>
+
+                <button type="submit" class="btn btn-orange">Lọc</button>
+
+            </form>
+        </div>
+
+        <!-- === PRODUCT LIST === -->
+        <div class="col-md-9">
+            <div class="row">
+
+                @foreach (var p in Model)
+                {
+                    <div class="col-md-4 mb-4">
+                        <a href="/Product/Detail/@p.Id" class="text-decoration-none text-dark">
+                            <div class="card h-100 product-card">
+                                <img src="@(p.ProductImages.FirstOrDefault()?.ImageUrl ?? "/images/default.jpg")" class="card-img-top" alt="@p.Name" />
+                                @if (p.QuantityInStock == 0)
+                                {
+                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hết hàng</span>
+                                }
+                                <div class="card-body">
+                                    <h6 class="card-title">@p.Name</h6>
+                                    <p class="card-text text-danger fw-bold">@p.Price.ToString("N0") ₫</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+
+            </div>
+
+            <!-- === PAGINATION === -->
+            <pagination current-page="@ViewBag.CurrentPage"
+                        total-pages="@ViewBag.TotalPages"
+                        base-url="/Product"
+                        query-string="keyword=@ViewBag.Keyword&categoryId=@ViewBag.CategoryId&maxPrice=@ViewBag.MaxPrice">
+            </pagination>
+
+
+        </div>
+    </div>
+</div>

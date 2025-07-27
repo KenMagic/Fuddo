@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Fuddo.Models.Product>
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+}
+@addTagHelper *,Fuddo
+
+<!-- 🔹 Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin">Quản lí</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Quản lí sản phẩm</li>
+    </ol>
+</nav>
+
+<h2>Quản lý sản phẩm</h2>
+<tempdata-alert></tempdata-alert>
+<!-- 🔍 Form tìm kiếm -->
+<form class="mb-3 d-flex" method="get" action="/AdminProduct/Index">
+    <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control me-2" placeholder="Tìm theo tên sản phẩm..." />
+    <button type="submit" class="btn btn-orange">Tìm kiếm</button>
+</form>
+
+<a href="/AdminProduct/Create" class="btn btn-success mb-3"> Thêm sản phẩm</a>
+
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Giá</th>
+            <th>Kho</th>
+            <th class="text-center">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Id</td>
+                <td>@p.Name</td>
+                <td>@p.Price.ToString("N0") ₫</td>
+                <td>@p.QuantityInStock</td>
+                <td class="text-center">
+                    <a href="/AdminProduct/Edit/@p.Id" class="btn btn-sm btn-warning me-1">✏️ Sửa</a>
+                    <a href="/AdminProduct/Details/@p.Id" class="btn btn-sm btn-info me-1">👁️ Xem</a>
+                    <a href="/AdminProduct/Delete/@p.Id" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">🗑️ Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- PHÂN TRANG -->
+<pagination current-page="@ViewBag.CurrentPage"
+            total-pages="@ViewBag.TotalPages"
+            base-url="/AdminProduct"
+            query-string="keyword=@ViewBag.Keyword">
+</pagination>

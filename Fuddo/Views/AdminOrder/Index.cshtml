@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Fuddo.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+@addTagHelper *, Fuddo
+
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin">Quản lí</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Quản lí đơn hàng</li>
+    </ol>
+</nav>
+
+<h2>Danh sách đơn hàng</h2>
+
+<!-- Hiển thị thông báo -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- Form tìm kiếm -->
+<form class="mb-3 d-flex align-items-center gap-2" method="get" action="/AdminOrder/Index">
+    <!-- Tìm theo tên -->
+    <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Tìm theo tên khách hàng..." style="max-width: 250px;" />
+
+    <!-- Dropdown trạng thái -->
+    <select name="status" class="form-select" style="max-width: 200px;">
+        <option value="all" @(ViewBag.Status == "all" ? "selected" : "")>Tất cả trạng thái</option>
+        <option value="Pending" @(ViewBag.Status == "Pending" ? "selected" : "")>Chờ xử lý</option>
+        <option value="Processing" @(ViewBag.Status == "Processing" ? "selected" : "")>Đang xử lý</option>
+        <option value="Completed" @(ViewBag.Status == "Completed" ? "selected" : "")>Hoàn tất</option>
+        <option value="Cancelled" @(ViewBag.Status == "Cancelled" ? "selected" : "")>Đã hủy</option>
+    </select>
+
+    <!-- Checkbox hôm nay -->
+    <div class="form-check">
+        <input type="checkbox" name="today" value="true" class="form-check-input" id="todayCheck" @(ViewBag.Today ? "checked" : "") />
+        <label class="form-check-label" for="todayCheck">Hôm nay</label>
+    </div>
+
+    <button type="submit" class="btn btn-orange">Lọc</button>
+</form>
+
+
+<!-- Bảng đơn hàng -->
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Khách hàng</th>
+            <th>Ngày đặt</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th class="text-center">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@o.Id</td>
+                <td>@o.User.FullName</td>
+                <td>@o.OrderDate.ToString("dd/MM/yyyy")</td>
+                <td>@o.TotalAmount.ToString("N0") ₫</td>
+                <td>@o.Status</td>
+                <td class="text-center">
+                    <a href="/AdminOrder/Details/@o.Id" class="btn btn-sm btn-info">👁️ Xem</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- PHÂN TRANG -->
+<pagination current-page="@ViewBag.CurrentPage"
+            total-pages="@ViewBag.TotalPages"
+            base-url="/AdminOrder"
+            query-string="keyword=@ViewBag.Keyword">
+</pagination>
