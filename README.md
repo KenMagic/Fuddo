@@ -10,32 +10,32 @@ It supports **customers** in browsing products, placing and tracking orders, and
 
 ### Customer
 - **Account Management**
-  - Register and log in.
-  - Update personal information.
+  - Register and log in.
+  - Update personal information.
 
 - **Product Browsing**
-  - View product categories and detailed product pages.
-  - Search products by name or category.
+  - View product categories and detailed product pages.
+  - Search products by name or category.
 
 - **Order Management**
-  - Place orders with shipping address and notes.
-  - Track order status (Pending → Processing → Shipped → Delivered).
-  - Receive **email notifications** when the status changes.
+  - Place orders with shipping address and notes.
+  - Track order status (Pending → Processing → Shipped → Delivered).
+  - Receive **email notifications** when the status changes.
 
 ---
 
 ### Admin
 - **Category Management**
-  - Add, edit, delete categories with validation.
+  - Add, edit, delete categories with validation.
 
 - **Product Management**
-  - CRUD operations for products.
-  - Upload and preview multiple product images.
+  - CRUD operations for products.
+  - Upload and preview multiple product images.
 
 - **Order Management**
-  - View detailed order information.
-  - Update order status or cancel orders.
-  - Stock validation before confirming orders.
+  - View detailed order information.
+  - Update order status or cancel orders.
+  - Stock validation before confirming orders.
 
 ---
 
