@@ -1,0 +1,16 @@
+CREATE TABLE PasswordResetTokens (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    Token NVARCHAR(100) NOT NULL,
+    ExpiryDate DATETIME NOT NULL,
+    CONSTRAINT FK_PasswordResetTokens_Users FOREIGN KEY (UserId) REFERENCES [User](Id) ON DELETE CASCADE
+);
+CREATE TABLE EmailVerificationTokens (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    Token NVARCHAR(100) NOT NULL,
+    ExpiryDate DATETIME NOT NULL,
+    CONSTRAINT FK_EmailVerificationTokens_Users FOREIGN KEY (UserId) REFERENCES [User](Id) ON DELETE CASCADE
+);
+ALTER TABLE [User]
+ADD IsVerified BIT NOT NULL DEFAULT 0;

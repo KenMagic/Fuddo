@@ -70,11 +70,14 @@
             </div>
 
             <!-- === PAGINATION === -->
-            <pagination current-page="@ViewBag.CurrentPage"
-                        total-pages="@ViewBag.TotalPages"
+            @if (ViewBag.TotalPages > 1)
+            {
+                <pagination current-page="@ViewBag.CurrentPage"
+                total-pages="@ViewBag.TotalPages"
                         base-url="/Product"
                         query-string="keyword=@ViewBag.Keyword&categoryId=@ViewBag.CategoryId&maxPrice=@ViewBag.MaxPrice">
             </pagination>
+            }
 
 
         </div>

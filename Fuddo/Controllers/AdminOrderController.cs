@@ -1,9 +1,12 @@
 ﻿using Fuddo.Models;
 using Fuddo.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fuddo.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class AdminOrderController : Controller
     {
         private readonly IOrderService _orderService;
@@ -78,11 +81,12 @@ namespace Fuddo.Controllers
             };
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateStatus(int orderId, OrderStatus newStatus)
+        public async Task<IActionResult> UpdateStatus(int orderId)
         {
             try
             {
-                newStatus = (OrderStatus)GetNextStatus(newStatus);
+                Order order = await _orderService.GetByIdAsync (orderId);
+                var newStatus = (OrderStatus)GetNextStatus(order.Status);
                 await _orderService.UpdateStatusAsync(orderId, newStatus);
                 TempData["Success"] = "Cập nhật trạng thái đơn hàng thành công!";
             }
@@ -116,16 +120,6 @@ namespace Fuddo.Controllers
             }
             await _orderService.UpdateStatusAsync(order.Id, OrderStatus.Cancelled);
 
-            // Hoàn kho: cộng lại số lượng sản phẩm
-            foreach (var detail in order.OrderDetails)
-            {
-                var product = await _productService.GetByIdAsync(detail.ProductId);
-                if (product != null)
-                {
-                    product.QuantityInStock += detail.Quantity;
-                    await _productService.UpdateAsync(product);
-                }
-            }
 
             // Gửi email thông báo hủy
             TempData["Success"] = "Đơn hàng đã được hủy.";

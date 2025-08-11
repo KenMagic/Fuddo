@@ -10,7 +10,7 @@ namespace Fuddo.Repository.Interface
 
         Task<User?> GetByUsernameAsync(string username);
 
-        Task AddAsync(User user);
+        Task<User> AddAsync(User user);
 
         Task UpdateAsync(User user);
 
@@ -20,5 +20,8 @@ namespace Fuddo.Repository.Interface
         Task<bool> CheckLoginAsync(string username, string password);
 
         Task<bool> UsernameExistsAsync(string username);
+        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByPhoneAsync(string phone);
+
     }
 }

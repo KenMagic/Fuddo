@@ -1,4 +1,4 @@
-﻿
+﻿@addTagHelper *, Fuddo
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,7 +149,7 @@
 
                     @{
                         var isAuthenticated = User.Identity.IsAuthenticated;
-                        var isAdmin = User.IsInRole("ADMIN");
+                        var isAdmin = User.IsInRole("Admin");
                     }
                     @if (!isAuthenticated)
                     {
@@ -190,6 +190,7 @@
 
     <!-- === MAIN CONTENT === -->
     <div class="container mt-4">
+        <tempdata-alert></tempdata-alert>
         @RenderBody()
     </div>
     <!-- === OFFCANVAS GIỎ HÀNG === -->

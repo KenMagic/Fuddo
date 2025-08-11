@@ -14,21 +14,6 @@
 
 <h2>Quản lý người dùng</h2>
 
-<!-- ✅ Hiển thị thông báo -->
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
 <!-- 🔍 Tìm kiếm -->
 <form class="mb-3 d-flex" method="get" action="/AdminUser/Index">
@@ -61,10 +46,24 @@
                 <td>@user.Phone</td>
                 <td>@user.Role</td>
                 <td class="text-center">
-                    <a href="/AdminUser/Edit/@user.Id" class="btn btn-sm btn-warning me-1">✏️ Sửa</a>
-                    <a href="/AdminUser/Details/@user.Id" class="btn btn-sm btn-info me-1">👁️ Xem</a>
-                    <a href="/AdminUser/Delete/@user.Id" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">🗑️ Xóa</a>
+
+                    <!-- Nút Đổi quyền (User -> Admin hoặc ngược lại) -->
+                    @if (user.Role == "Admin")
+                    {
+                        <a href="/AdminUser/ChangeRole/@user.Id?role=User" class="btn btn-sm btn-secondary me-1"
+                           onclick="return confirm('Chuyển người dùng này thành User?');">
+                            👤 Bỏ quyền Admin
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/AdminUser/ChangeRole/@user.Id?role=Admin" class="btn btn-sm btn-success me-1"
+                           onclick="return confirm('Nâng quyền người dùng này thành Admin?');">
+                            ⭐ Làm Admin
+                        </a>
+                    }
                 </td>
+
             </tr>
         }
     </tbody>

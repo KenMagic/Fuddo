@@ -1,10 +1,13 @@
 ﻿using Fuddo.Models;
 using Fuddo.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Fuddo.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class AdminUserController : Controller
     {
         private readonly IUserService _userService;
@@ -50,17 +53,60 @@ namespace Fuddo.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(User u)
+        public async Task<IActionResult> Create(User user)
         {
             if (ModelState.IsValid)
             {
-                await _userService.AddAsync(u);
-                TempData["Success"] = "Thêm người dùng thành công!";
-                return RedirectToAction("Index");
+                try
+                {
+                    user.PasswordHash = GenerateRandomPassword();
+                    var createdUser =  await _userService.AddAsync(user);
+                    await _userService.SendPasswordResetLinkAsync(createdUser, $"{Request.Scheme}://{Request.Host}");
+
+                    TempData["Success"] = "Tạo người dùng thành công và đã gửi email!";
+
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = ex.Message;
+                }
             }
-            TempData["Error"] = "Vui lòng kiểm tra lại thông tin người dùng.";
-            return View(u);
+            return View(user);
         }
+        [HttpGet]
+        public async Task<IActionResult> ChangeRole(int id, string role)
+        {
+            try
+            {
+                var user = await _userService.GetByIdAsync(id);
+                if (user == null)
+                {
+                    TempData["Error"] = "Người dùng không tồn tại.";
+                    return RedirectToAction("Index");
+                }
+
+                // Cập nhật role
+                user.Role = role;
+
+                await _userService.UpdateAsync(user);
+
+                TempData["Success"] = $"Đã cập nhật quyền người dùng thành {role}.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return RedirectToAction("Index");
+        }
+        public string GenerateRandomPassword(int length = 8)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
     }
 }
 

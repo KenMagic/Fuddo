@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Fuddo.Controllers
 {
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = "Admin")]
     public class AdminProductController : Controller
     {
         private readonly IProductService _productService;
@@ -99,7 +99,6 @@ namespace Fuddo.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Nếu lỗi
             var categories = await _categoryService.GetAllAsync();
             ViewBag.Categories = categories;
 

@@ -1,63 +1,60 @@
-﻿@{
+﻿@model Fuddo.Models.ViewModel.CheckoutViewModel
+@{
     ViewData["Title"] = "Thanh toán";
     var cartItems = ViewBag.CartItems as List<Fuddo.Models.CartItem>;
     decimal total = cartItems?.Sum(i => i.Product.Price * i.Quantity) ?? 0;
 }
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Fuddo
 <div class="container mt-5">
     <h2 class="mb-4">Thông tin thanh toán</h2>
 
     <div class="row">
-        <!-- FORM INFO -->
         <div class="col-md-6">
-            <form method="post" action="/Order/PlaceOrder">
+            <form asp-controller="Order" asp-action="PlaceOrder" method="post">
                 <div class="mb-3">
-                    <label>Họ và tên</label>
-                    <input type="text" name="fullName" class="form-control" value="@ViewBag.FullName" required />
+                    <label asp-for="FullName"></label>
+                    <input asp-for="FullName" class="form-control" required/>
+                    <span asp-validation-for="FullName" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label>Số điện thoại</label>
-                    <input type="text" name="phone" class="form-control" value="@ViewBag.Phone" required />
+                    <label asp-for="Phone"></label>
+                    <input asp-for="Phone" class="form-control" required/>
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label>Địa chỉ giao hàng</label>
-                    <textarea name="address" class="form-control" required>@ViewBag.Address</textarea>
+                    <label asp-for="Address"></label>
+                    <textarea asp-for="Address" class="form-control" required></textarea>
+                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label>Ghi chú</label>
-                    <textarea name="note" class="form-control"></textarea>
+                    <label asp-for="Note"></label>
+                    <textarea asp-for="Note" class="form-control"></textarea>
                 </div>
 
                 <button type="submit" class="btn btn-orange">Xác nhận đặt hàng</button>
             </form>
         </div>
 
-        <!-- ORDER SUMMARY -->
         <div class="col-md-6">
             <h5>Đơn hàng của bạn</h5>
             <ul class="list-group mb-3">
-                @if (cartItems != null && cartItems.Count > 0)
+                @foreach (var item in cartItems)
                 {
-                    foreach (var item in cartItems)
-                    {
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                <strong>@item.Product.Name</strong><br />
-                                SL: @item.Quantity
-                            </div>
-                            <span class="text-danger">@String.Format("{0:N0}", item.Product.Price * item.Quantity) ₫</span>
-                        </li>
-                    }
                     <li class="list-group-item d-flex justify-content-between">
-                        <strong>Tổng cộng:</strong>
-                        <strong class="text-danger">@String.Format("{0:N0}", total) ₫</strong>
+                        <div>
+                            <strong>@item.Product.Name</strong><br />
+                            SL: @item.Quantity
+                        </div>
+                        <span class="text-danger">@String.Format("{0:N0}", item.Product.Price * item.Quantity) ₫</span>
                     </li>
                 }
-                else
-                {
-                    <li class="list-group-item">Giỏ hàng trống.</li>
-                }
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Tổng cộng:</strong>
+                    <strong class="text-danger">@String.Format("{0:N0}", total) ₫</strong>
+                </li>
             </ul>
         </div>
     </div>
 </div>
+

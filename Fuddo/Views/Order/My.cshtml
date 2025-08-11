@@ -6,9 +6,38 @@
 }
 
 @addTagHelper *,Fuddo
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div class="container mt-5">
     <h2 class="mb-4">Lịch sử đơn hàng</h2>
+    <form method="get" asp-action="My" class="row mb-3">
+        <div class="col-md-3">
+            <label>Trạng thái</label>
+            <select name="status" class="form-select">
+                <option value="">Tất cả</option>
+                <option value="Pending" selected="@(ViewBag.Status == "Pending")">Pending</option>
+                <option value="Processing" selected="@(ViewBag.Status == "Processing")">Processing</option>
+                <option value="Delivered" selected="@(ViewBag.Status == "Delivered")">Delivered</option>
+                <option value="Cancelled" selected="@(ViewBag.Status == "Cancelled")">Cancelled</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label>Từ ngày</label>
+            <input type="date" name="startDate" value="@ViewBag.StartDate" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Đến ngày</label>
+            <input type="date" name="endDate" value="@ViewBag.EndDate" class="form-control" />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-orange me-2">Lọc</button>
+            <a href="/Order/My" class="btn btn-secondary">Reset</a>
+        </div>
+    </form>
+
 
     @if (Model != null && Model.Any())
     {

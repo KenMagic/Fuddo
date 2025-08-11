@@ -1,9 +1,10 @@
 ﻿@model Fuddo.Models.User
 @{
-    ViewData["Title"] = "Thêm sản phẩm";
+    ViewData["Title"] = "Thêm người dùng";
 }
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Fuddo
+
 <nav style="--bs-breadcrumb-divider: '>>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/Admin">Quản lí</a></li>
@@ -11,38 +12,41 @@
         <li class="breadcrumb-item active" aria-current="page">Thêm người dùng</li>
     </ol>
 </nav>
+
 <tempdata-alert></tempdata-alert>
+
 <div class="container mt-4">
     <h2>Thêm người dùng mới</h2>
     <form method="post">
-    <div class="mb-3">
-        <label class="form-label">Họ tên</label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
 
-    <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Tên tài khoản</label>
+            <input asp-for="Username" class="form-control" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Số điện thoại</label>
-        <input asp-for="Phone" class="form-control" />
-        <span asp-validation-for="Phone" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Vai trò</label>
-        <select asp-for="Role" class="form-select">
-            <option value="User">User</option>
-            <option value="Admin">Admin</option>
-        </select>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Số điện thoại</label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Tạo</button>
-    <a asp-controller="AdminUser" asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        <div class="mb-3">
+            <label class="form-label">Vai trò</label>
+            <select asp-for="Role" class="form-select">
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Tạo</button>
+        <a asp-controller="AdminUser" asp-action="Index" class="btn btn-secondary">Quay lại</a>
     </form>
 </div>
-

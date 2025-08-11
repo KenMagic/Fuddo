@@ -14,16 +14,6 @@
 
 <h2>Danh sách đơn hàng</h2>
 
-<!-- Hiển thị thông báo -->
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-
 <!-- Form tìm kiếm -->
 <form class="mb-3 d-flex align-items-center gap-2" method="get" action="/AdminOrder/Index">
     <!-- Tìm theo tên -->

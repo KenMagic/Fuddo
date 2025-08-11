@@ -1,47 +1,52 @@
-﻿@{
-    ViewData["Title"] = "Đăng ký";
-    string? error = ViewBag.Error as string;
-}
+﻿@model Fuddo.Models.ViewModel.RegisterModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+@addTagHelper *, Fuddo
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-5 mt-5">
             <h3 class="text-center mb-4">Đăng ký tài khoản</h3>
 
-            @if (!string.IsNullOrEmpty(error))
-            {
-                <div class="alert alert-danger">@error</div>
-            }
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <form method="post" action="/Account/Register">
+            <form asp-action="Register" method="post">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Tên đăng nhập</label>
-                    <input type="text" name="username" class="form-control" required />
+                    <label asp-for="Username" class="form-label">Tên tài khoản: </label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">Mật khẩu</label>
-                    <input type="password" name="password" class="form-control" required />
+                    <label asp-for="Password" class="form-label">Mật khẩu</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" />
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" type="email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="fullname" class="form-label">Họ tên</label>
-                    <input type="text" name="fullname" class="form-control" />
+                    <label asp-for="FullName" class="form-label">Họ và tên</label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="phone" class="form-label">Số điện thoại</label>
-                    <input type="text" name="phone" class="form-control" />
+                    <label asp-for="Phone" class="form-label">Số điện thoại</label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="address" class="form-label">Địa chỉ</label>
-                    <input type="text" name="address" class="form-control" />
+                    <label asp-for="Address" class="form-label">Địa chỉ</label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
 
                 <button type="submit" class="btn btn-orange w-100">Đăng ký</button>
@@ -53,3 +58,4 @@
         </div>
     </div>
 </div>
+

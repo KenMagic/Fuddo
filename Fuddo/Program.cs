@@ -1,8 +1,10 @@
 ﻿using Fuddo.Models;
 using Fuddo.Repository.Interface;
 using Fuddo.Repository.SQLImpl;
+using Fuddo.Service.Email;
 using Fuddo.Service.ImplV1;
 using Fuddo.Service.Interface;
+using Fuddo.Services.Email;
 using Microsoft.EntityFrameworkCore;
 
  var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +12,13 @@ using Microsoft.EntityFrameworkCore;
 // 🔹 Thêm DbContext
 builder.Services.AddDbContext<FuddoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
 
 // 🔹 Thêm Service và Repository
+builder.Services.AddTransient<IMailService, MailService>();
+builder.Services.AddTransient<IPasswordResetTokenRepo, PasswordResetTokenRepoSQL>();
+builder.Services.AddTransient<IEmailVerificationTokenRepo, EmailVerificationTokenRepoSQL>();
 builder.Services.AddScoped<IProductRepo, ProductRepoSQL>();
 builder.Services.AddScoped<IProductService, ProductServiceV1>();
 builder.Services.AddScoped<IUserRepo, UserRepoSQL>();

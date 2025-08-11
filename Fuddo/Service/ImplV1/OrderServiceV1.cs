@@ -1,18 +1,20 @@
 ﻿using Fuddo.Models;
-using Fuddo.Service.Interface;
-
 using Fuddo.Repository.Interface;
+using Fuddo.Service.Interface;
+using Fuddo.Services.Email;
 namespace Fuddo.Service.ImplV1
 {
     public class OrderServiceV1 : IOrderService
     {
         private readonly IOrderRepo _orderRepo;
         private readonly IProductRepo _productRepo;
+        private readonly IMailService _mailService;
 
-        public OrderServiceV1(IOrderRepo orderRepo, IProductRepo productRepo)
+        public OrderServiceV1(IOrderRepo orderRepo, IProductRepo productRepo, IMailService mailService)
         {
             _orderRepo = orderRepo;
             _productRepo = productRepo;
+            _mailService = mailService;
         }
         public async Task AddAsync(Order order)
         {
@@ -39,7 +41,7 @@ namespace Fuddo.Service.ImplV1
                 if (detail.Quantity > product.QuantityInStock)
                 {
                     throw new InvalidOperationException(
-                        $"Insufficient stock for product ID {detail.ProductId}. Available: {product.QuantityInStock}, Requested: {detail.Quantity}.");
+                        $"Đã hết hàng {product.Name}. Còn: {product.QuantityInStock}, Đặt: {detail.Quantity}.");
                 }
 
                 // 3. Trừ tồn kho
@@ -75,13 +77,28 @@ namespace Fuddo.Service.ImplV1
         {
             var order = await _orderRepo.GetByIdAsync(orderId);
             if (order == null)
-                throw new KeyNotFoundException($"Đơn hàng {orderId} không tồn tại.");
+                throw new KeyNotFoundException($"Order {orderId} not found.");
 
             if (order.Status == OrderStatus.Delivered || order.Status == OrderStatus.Cancelled)
-                throw new InvalidOperationException("Đơn hàng đã hoàn tất hoặc đã hủy, không thể cập nhật.");
-
+                throw new InvalidOperationException("This order is already completed or cancelled, cannot update status.");
+            if (newStatus == OrderStatus.Cancelled && order.Status != OrderStatus.Cancelled)
+            {
+                foreach (var detail in order.OrderDetails)
+                {
+                    detail.Product.QuantityInStock += detail.Quantity;
+                }
+            }
             await _orderRepo.UpdateStatusAsync(orderId, newStatus);
+
+            await _mailService.SendOrderStatusEmailAsync(
+                order.User.Email,
+                order.User.FullName,
+                order.Id,
+                newStatus.ToString(),
+                order.TotalAmount
+            );
         }
+
 
     }
 }

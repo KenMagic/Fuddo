@@ -1,4 +1,5 @@
 ﻿using Fuddo.Models;
+using Fuddo.Models.ViewModel;
 using Fuddo.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -79,28 +80,25 @@ namespace Fuddo.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Checkout()
         {
-            string username = User.Identity?.Name ?? "";
+            // load thông tin user để fill vào
+            var username = User.Identity?.Name;
+            if (string.IsNullOrEmpty(username)) return RedirectToAction("Login", "Account");
 
             var user = await _userService.GetByUsernameAsync(username);
-            if (user == null)
+
+            var model = new CheckoutViewModel
             {
-                return RedirectToAction("Login", "Account");
-            }
+                FullName = user.FullName,
+                Phone = user.Phone,
+                Address = user.Address
+            };
 
-            var cartItems = (await _cartService.GetCartItemsAsync(user.Id)).ToList();
-            if (!cartItems.Any())
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            ViewBag.CartItems = cartItems;
-            ViewBag.FullName = user.FullName ?? "";
-            ViewBag.Phone = user.Phone ?? "";
-            ViewBag.Address = user.Address ?? "";
-
-            return View();
+            ViewBag.CartItems = await _cartService.GetCartItemsAsync(user.Id);
+            return View(model);
         }
+
     }
 }

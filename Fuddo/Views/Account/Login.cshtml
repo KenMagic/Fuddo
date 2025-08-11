@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Đăng nhập";
 }
-
+@addTagHelper *, Fuddo
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-5 col-lg-4 mt-5">
@@ -30,6 +30,9 @@
             <div class="text-center mt-3">
                 <span>Chưa có tài khoản?</span>
                 <a href="/Account/Register">Đăng ký</a>
+            </div>
+            <div class="text-center mt-2">
+                <a href="/Account/ForgotPassword" class="text-muted">Quên mật khẩu?</a>
             </div>
         </div>
     </div>
